@@ -1,2 +1,2 @@
 # C-Doubly-Linked-List
-Created a functioning doubly linked list in C++ with multiple features.
+This C++ project implements a doubly linked list with enhanced node properties. Each node contains an integer, the digit count of the integer, and a boolean indicating if the number is a palindrome. The list supports operations such as generating from a vector, printing, finding the largest integer, identifying neighbors, inserting before a specific node, deleting nodes, and reversing the list.
