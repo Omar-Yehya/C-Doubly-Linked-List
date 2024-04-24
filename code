@@ -1,0 +1,265 @@
+#include<iostream>
+#include<vector>
+#include<string>
+#include<algorithm>
+using namespace std;
+struct Node {
+	int n;
+	int dig;
+	bool pali;
+
+	
+	Node* next;
+	Node* prev;
+
+};
+//Here I create my Node and all that will be in my nodes
+
+class D_L {
+private:
+	Node* head;
+	Node* tail;
+
+
+	//creating the class Double link or D_L for simplicity and setting up head and tail as nodes
+
+public:
+	D_L() {
+		head = NULL;
+		tail = NULL;
+
+	}
+	//constructor 
+
+	void generate_dlist(vector<int> v) {
+		string str;
+		string rev;
+		for (int i = 0; i < v.size(); i++) {
+		
+			Node* new_node = new Node();
+			
+			auto s = to_string(v[i]);
+			new_node->dig = s.length();
+
+			str = to_string(v[i]);
+			rev = str;
+			reverse(rev.begin(), rev.end());
+			if (str == rev) {
+				new_node->pali = 1;
+			}
+			else {
+				new_node->pali = 0;
+			}
+
+//trun my numbers in the vector to strings that way I can easily use the reverse method to see if the reverse version is equal to the original
+
+			new_node->n = v[i];
+			new_node->prev = NULL;
+			new_node->next = NULL;
+
+
+			if (head == NULL)
+				head = tail = new_node;
+			else {
+				tail->next = new_node;
+				new_node->prev = tail;
+				tail = new_node;
+			}
+			
+			///to create the list I use a for loop to iterate through all the numbers in the vector and create new_node variable and set value n equal to i the number.
+			//I use the to string func to turn the numbers into string so I can easily get the length of the number and set that equal to "dig" which is how many digits
+
+
+
+		}
+
+
+	}
+
+	void print() {
+		Node* curr;
+		curr = head;
+		while (curr != NULL) {
+			cout << "[";
+			cout << curr->n;
+			cout << ", ";
+			cout << curr->dig;
+			cout << ", ";
+			cout << curr->pali;
+			cout << "]" << endl;
+
+			curr = curr->next;
+		} 
+	}
+	//simple print function that iterates through the numbers until its curr is not equal to NULL and prints all numbers
+	int largest_integer() {
+		int max;
+		Node* curr;
+		curr = head;
+		max = head->n;
+		
+		while (curr != NULL) {
+			if (curr->n > max) {
+				max = curr->n;
+			}
+			curr = curr->next;
+
+		}
+		return max;
+	}
+
+	//function iterates through the numbers and checks each number one by one and the biggest number is set equal to max if one bigger is found max is replaced 
+
+	void neighbors(int k) {
+		Node* curr;
+		Node* prev;
+		curr=head;
+		int start, last;
+		start = head->n;
+		last = tail->n;
+		
+		
+		if (start == k) 
+			cout << "__, " << curr->next->n;
+		else if (last == k) {
+			cout << tail->prev->n << ", __," << endl;
+		}
+		
+		while (curr->n != k) {
+			curr = curr->next;
+			
+			if (curr->n == k) {
+				cout << curr->prev->n << " " << curr->next->n << endl;
+			}
+		}	
+
+	}
+	//this function I have to check two cases if the number the user puts is at the head or the tail that's why I set start and last equal to the head 
+		//and check for those cases for numbers other than head and tail I iterate through until the number the user input is found and print what's to the left and right of 
+		//that num
+
+
+
+	void insert_before(int k, int x) {
+		Node* curr;
+		Node* before;
+		int start;
+		start = head->n;
+		Node* new_node = new Node();
+		curr = head;
+		
+		while (curr->n!=k) {
+			before = curr;
+			curr = curr->next;
+			
+			 if (curr->n == k) {
+				new_node->n = x;
+				before->next = new_node;
+				
+				new_node->next = curr;
+				new_node->prev=before;
+				curr->prev = new_node;
+				
+				auto s = to_string(x);
+				new_node->dig = s.length();
+			}
+		}
+	}
+	
+	//I iterate through the list until the number the user input matches with a number in the list i use the new node that i created to create a whole new node
+	//and place it right behind the number that the user input. (The auto s to string is just to show the digits)
+
+
+	void delete_integer(int k) {
+		Node* curr;
+		Node* D_node;
+		while (head != NULL && head->n == k) {
+			D_node = head;
+			head = head->next;
+			free(D_node);
+			if (head != NULL)
+				head->prev = NULL;
+		}
+		curr = head;
+		if (curr != NULL) {
+			while (curr->next != NULL) {
+				if (curr->next->n == k) {
+					D_node = curr->next;
+					curr->next = curr->next->next;
+					if (curr->next != NULL)
+						curr->next->prev = curr;
+					free(D_node);
+				}
+				else {
+					curr = curr->next;
+				}
+			}
+		}
+
+	}
+	//here I create a D_node which is the node I need to delete so I iterate through the list and I use the double && to also spot the number that will be deleted
+	//once spotted I set Dnode equal to head and let head equal the value right next to it and then free the Dnode. I use free Dnode which means to deallocates a block of memory
+
+	
+	void reverse_list() {
+		Node* curr;
+		curr = tail;
+		while (curr != NULL) {
+			cout << curr->n<<" ";
+			
+
+			curr = curr->prev;
+		}
+	}
+
+	//here I simply start from the tail almost like I'm treating as the head of the list and then iterate through but in reverse that's why I'm using prev instead of next.
+
+
+};
+
+
+
+
+int main() {
+	D_L L;
+	vector<int> v = { 258, 121, 33, 678876, 12721, 95441159, 12626387, 1271,
+27182712, 999269873, 5281, 23764, 9988, 126712, 33, 1271 };
+	// I call my class and use the vector v
+	
+	L.generate_dlist(v);
+	L.print();
+	cout << "------------------------"<<endl;
+
+	cout << L.largest_integer() <<endl;
+	
+
+	cout << "------------------------"<<endl;
+
+	
+	L.neighbors(1271);
+	
+	//when I run this I get two results because since the input is 1271 there are two instances of those numbers so we get the neighbor of the one thats near the end of
+	//the list and the one in the middle. if we were to put 5281 in the function we would only get the neighbors of this one number because this number only occurs once.
+	
+cout << "------------------------" << endl;
+
+	L.insert_before(121, 66);
+	L.print();
+
+	
+	//i'm inserting the number 66 before 121 and im using the print function to show.
+	cout << "------------------------" << endl;
+
+	L.delete_integer(33);
+		L.print();
+
+		// here I'm deleting all instances of the number 33 and the print function to show it.
+		cout << "------------------------" << endl;
+
+	L.reverse_list();
+	
+	//here I simply reverse all elements and the order of the vectors is switched
+
+
+	return 0;
+}
